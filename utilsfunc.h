@@ -2,6 +2,7 @@
 #define LIB_OLED_UTILS_FUNC_H
 
 #include <Wire.h>
+#include <Arduino.h>
 
 using uchar = unsigned char;
 
@@ -27,6 +28,27 @@ static inline void _SWAP(uchar& x, uchar& y){
 
 static inline void _MINMAX(uchar& p, uchar& q){
     if (p > q) _SWAP(p, q);
+}
+
+static inline bool _LIMIT(const uchar x, const uchar y){
+    return (x>=DISPLAY_CONFIG::MAX_X || y>=DISPLAY_CONFIG::MAX_Y);
+}
+
+static inline void _PRINT_BUFFER(const void* buffer){
+    constexpr uint8_t SIZE_PRINT = 64;
+    char str[5];
+
+    sprintf_P(str, PSTR("%04X"), (uint16_t)(buffer));
+    Serial.print(str); // address
+
+    buffer -= SIZE_PRINT;
+
+    for(uint8_t i = 0; i < SIZE_PRINT; ++i){
+        sprintf_P(str, PSTR(" %02X"), *(uint8_t*)buffer);
+        Serial.print(str);
+        buffer++;
+    }
+    Serial.print('\n');
 }
 
 

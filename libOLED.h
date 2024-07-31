@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <string.h>
+#include <avr/pgmspace.h>
 
 #include "constants.h"
 #include "utilsfunc.h"
@@ -21,6 +22,7 @@ class OLED {
 
         void set_display            (bool flag);
         void set_invert_display     (bool flag);
+        void set_font               (const uchar* font);
 
         void set_horizontal_line    (uchar x0, uchar y0, uchar x1);
         void set_vertical_line      (uchar x0, uchar y0, uchar y1);
@@ -28,22 +30,25 @@ class OLED {
         void set_circle             (uchar x0, uchar y0, uchar radius, bool filling = false);
         void set_cursor             (uchar x, uchar y);
         void set_pixel              (uchar x, uchar y);
+        void put_char               (uchar ch);
+        void set_char               (uchar x, uchar y);
 
         bool get_pixel              (uchar x, uchar y);
         
         void send_command   (byte command);
         void send_data      (byte data);  
 
-    private:
-        void __writter(byte, byte);
-        void __allocate_memory(void);
-        void __free_memory(void);
+        uchar* get_buffer   (void);
+        void   print_buffer (void);
 
-        byte  __address;
-        byte  __font;
-        uchar __pos_x;
-        uchar __pos_y;
+    private:
+        inline void __writter(byte, byte);
+        // inline void __allocate_memory(void);
+        // inline void __free_memory(void);
+
+        const byte  __address;
         uchar __buffer[DISPLAY_CONFIG::BUFFER_SIZE];
+        uchar *__buffer_ptr;
 };
 
 

@@ -41,6 +41,12 @@ void OLED::clear(void){
     memset(__buffer, 0, sizeof(__buffer));
 }
 
+
+void OLED::set_invert_display(bool flag){
+    send_command((flag)?DISPLAY_COMMANDS::SET_INVERT_DISPLAY:DISPLAY_COMMANDS::SET_NORMAL_DISPLAY);
+}
+
+
 void OLED::update(){
     for(int i = 0; i < 64; ++i){
         WRAPPER_BEGINTRANSMISSION(DISPLAY_CONFIG::ADDRESS);
@@ -54,6 +60,22 @@ void OLED::update(){
 
 
 
+
+
+
+
+void OLED::set_pixel(uchar x, uchar y){
+    if(_LIMIT(x, y)) return;
+    
+/*          
+                |---[[  page size = y / 8  ]]
+                |                                              |--[[  bit = y % 8  ]]
+                |                                              |
+                v                                              v
+             |------|                                       |-----|
+             |      |                                       |     |             */
+    __buffer[(y >> 3) * DISPLAY_CONFIG::MAX_X + x] |= (1 << (y & 7));
+}
 
 ///     SYSTEM COMMANDS     ///
 
@@ -69,6 +91,14 @@ void OLED::send_data(byte data)
 }
 
 
+uchar* OLED::get_buffer(void){
+    return __buffer;
+}
+
+
+void OLED::print_buffer(void){
+    _PRINT_BUFFER(__buffer);
+}
 
 ///     PRIVATE FUNC    ///
 
