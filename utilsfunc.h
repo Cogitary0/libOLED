@@ -4,17 +4,15 @@
 #include <Wire.h>
 #include <Arduino.h>
 
-using uchar = unsigned char;
-
 static inline void WRAPPER_INIT(){
     Wire.begin();
 }
 
-static inline void WRAPPER_BEGINTRANSMISSION(uchar _address){
+static inline void WRAPPER_BEGINTRANSMISSION(uint8_t _address){
     Wire.beginTransmission(_address);
 }
 
-static inline void WRAPPER_WRITE(uchar _data){
+static inline void WRAPPER_WRITE(uint8_t _data){
     Wire.write(_data);
 }
 
@@ -22,15 +20,15 @@ static inline void WRAPPER_ENDTRANSMISSION(){
     Wire.endTransmission();
 }
 
-static inline void _SWAP(uchar& x, uchar& y){
+static inline void _SWAP(uint8_t& x, uint8_t& y){
     x^=y; y^=x; x^=y;
 }
 
-static inline void _MINMAX(uchar& p, uchar& q){
+static inline void _MINMAX(uint8_t& p, uint8_t& q){
     if (p > q) _SWAP(p, q);
 }
 
-static inline bool _LIMIT(const uchar x, const uchar y){
+static inline bool _LIMIT(const uint8_t x, const uint8_t y){
     return (x>=DISPLAY_CONFIG::MAX_X || y>=DISPLAY_CONFIG::MAX_Y);
 }
 
