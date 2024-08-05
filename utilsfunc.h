@@ -32,6 +32,10 @@ static inline bool _LIMIT(const uint8_t x, const uint8_t y){
     return (x>=DISPLAY_CONFIG::MAX_X || y>=DISPLAY_CONFIG::MAX_Y);
 }
 
+static inline int8_t _SIGN(const uint8_t value){
+    return (value < 0) ? -1 : 1;
+}
+
 static inline void _PRINT_BUFFER(const void* buffer){
     constexpr uint8_t SIZE_PRINT = 64;
     char str[5];

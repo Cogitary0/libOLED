@@ -71,7 +71,6 @@ bool OLED::get_pixel(uint8_t x, uint8_t y){
 
 ///     DRAW COMMANDS     ///
 
-
 void OLED::draw_vertical_line(uint8_t x0, uint8_t y0, uint8_t y1){
     _MINMAX(y0, y1);
 
@@ -115,13 +114,43 @@ void OLED::draw_horizontal_line(uint8_t x0, uint8_t y0, uint8_t x1){
 
 void OLED::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
 
+    
+
+    // const int16_t dx = x1 - x0;
+    // const int16_t dy = y1 - y0;
+    // int16_t er = dx - dy;
+
+    // uint8_t x = x0;
+    // uint8_t y = y0;
+
+    // while(x <= x1){
+    //     draw_pixel(x, y);
+
+    //     if(x0 == x1 && y0 == y1) break;
+
+    //     er += (er > -dy) ? -dy : dx;
+    //     x += (er > -dy);
+    //     y += (er < dx);
+
+    // }
+
+
+    // int8_t sx = _SIGN(x0, x1);
+    // int8_t sy = _SIGN(y0, y1);
+
+    
+
+    // return;
+
+    int8_t sign = _SIGN(x1 - x0) / _SIGN(y1 - y0);
+
     _MINMAX(x0, x1);
     _MINMAX(y0, y1);
 
     uint8_t diff = abs(y1 - y0)/abs(x1 - x0);
 
     for(uint8_t x = x0; x <= x1; ++x){
-        draw_pixel(x, (uint8_t)(y0 + ((x-x0)*diff)));
+        draw_pixel(x, (uint8_t)(y0 + ((x-x0)*diff)*sign));
     }
 
     return;
@@ -217,9 +246,10 @@ void OLED::print_buffer(void){
     _PRINT_BUFFER(__buffer);
 }
 
+
 ///     PRIVATE FUNC    ///
 
-void OLED::__writter(byte DATA, byte MODE)
+inline void OLED::__writter(byte DATA, byte MODE)
 {
     WRAPPER_BEGINTRANSMISSION(__address);
     WRAPPER_WRITE(MODE);
