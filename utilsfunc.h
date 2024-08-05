@@ -55,7 +55,7 @@ static inline void _PRINT_BUFFER(const void* buffer){
         buffer++;
     }
     Serial.print('\n');
-}
+}   
 
 
 

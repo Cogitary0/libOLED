@@ -7,8 +7,7 @@
 
 #include "constants.h"
 #include "utilsfunc.h"
-
-using uint  = uint16_t;
+#include "font.h"
 
 class OLED {
     public:

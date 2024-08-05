@@ -38,7 +38,8 @@ void OLED::init(void){
 ///     BASIC COMMANDS      ///
 
 void OLED::clear(void){
-    memset(__buffer, NULL, sizeof(__buffer));
+    // memset(__buffer, NULL, sizeof(__buffer));
+    send_command(DISPLAY_COMMANDS::CLEAR_DISPLAY);
 }
 
 
@@ -244,7 +245,7 @@ void OLED::draw_triangle(uint8_t x0, uint8_t y0,
 
 
 void OLED::draw_char(uint8_t x, uint8_t y, const char ch){
-    
+
 }
 
 
@@ -281,5 +282,6 @@ inline void OLED::__writter(byte DATA, byte MODE)
     WRAPPER_WRITE(DATA);
     WRAPPER_ENDTRANSMISSION();
 }
+
 
 
