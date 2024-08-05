@@ -117,6 +117,16 @@ void OLED::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
     const uint8_t dx = abs(x1 - x0);
     const uint8_t dy = abs(y1 - y0);
 
+    if(dx==0){
+        draw_vertical_line(x0, min(y0, y1), max(y0, y1));
+        return;
+    }
+
+    if(dy == 0){
+        draw_horizontal_line(min(x0, x1), y0, max(x0, x1));
+        return;
+    }
+
     const int8_t sx = _SIGN(x0, x1);
     const int8_t sy = _SIGN(y0, y1);
 
@@ -124,9 +134,12 @@ void OLED::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
 
     while(1){
         draw_pixel(x0, y0);
+
         if(x0==x1&&y1==y0)break;
 
         int8_t error2 = 2 * error;
+
+
         if(error2 > -dy){
             error -= dy;
             x0 += sx;
@@ -181,30 +194,36 @@ void OLED::draw_circle(uint8_t x0, uint8_t y0, uint8_t radius, bool filled){
         return;
     }
     
-    uint8_t x = 0;
-    uint8_t y = radius;
-    int8_t delta = 1 - 2 * radius;
-    int8_t error = 0;
-    while(y >= 0) {
-      draw_pixel(x0 + x, y0 + y);
-      draw_pixel(x0 + x, y0 - y);
-      draw_pixel(x0 - x, y0 + y);
-      draw_pixel(x0 - x, y0 - y);
-      error = 2 * (delta + y) - 1;
-      if(delta < 0 && error <= 0) {
-        ++x;
-        delta += 2 * x + 1;
-        continue;
-      }
-      if(delta > 0 && error > 0) {
-        --y;
-        delta += 1 - 2 * y;
-        continue;
-      }
-      ++x;
-      delta += 2 * (x - y);
-      --y;
+    int8_t x = 0;
+    int8_t y = radius;
+    int8_t d = 1 - radius;
+
+    while (x <= y) {
+        if (filled) {
+            for(int8_t i = -y; i <= y; ++i){
+                draw_pixel(x0 - x, y0 + i);
+                draw_pixel(x0 + x, y0 + i);
+            }
+        } else {
+            draw_pixel(x0 - x, y0 - y);
+            draw_pixel(x0 + x, y0 - y);
+            draw_pixel(x0 - x, y0 + y);
+            draw_pixel(x0 + x, y0 + y);
+            draw_pixel(x0 - y, y0 - x);
+            draw_pixel(x0 + y, y0 - x);
+            draw_pixel(x0 - y, y0 + x);
+            draw_pixel(x0 + y, y0 + x);
+        }
+
+        if (d < 0) {
+            d += (x << 1) + 3;
+        } else {
+            d += ((x - y) << 1) + 5;
+            y--;
+        }
+        x++;
     }
+    return;
     
 }
 
