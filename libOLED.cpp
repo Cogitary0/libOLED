@@ -114,47 +114,29 @@ void OLED::draw_horizontal_line(uint8_t x0, uint8_t y0, uint8_t x1){
 
 void OLED::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
 
-    
+    const uint8_t dx = abs(x1 - x0);
+    const uint8_t dy = abs(y1 - y0);
 
-    // const int16_t dx = x1 - x0;
-    // const int16_t dy = y1 - y0;
-    // int16_t er = dx - dy;
+    const int8_t sx = _SIGN(x0, x1);
+    const int8_t sy = _SIGN(y0, y1);
 
-    // uint8_t x = x0;
-    // uint8_t y = y0;
+    int8_t error = dx - dy;
 
-    // while(x <= x1){
-    //     draw_pixel(x, y);
+    while(1){
+        draw_pixel(x0, y0);
+        if(x0==x1&&y1==y0)break;
 
-    //     if(x0 == x1 && y0 == y1) break;
-
-    //     er += (er > -dy) ? -dy : dx;
-    //     x += (er > -dy);
-    //     y += (er < dx);
-
-    // }
-
-
-    // int8_t sx = _SIGN(x0, x1);
-    // int8_t sy = _SIGN(y0, y1);
-
-    
-
-    // return;
-
-    int8_t sign = _SIGN(x1 - x0) / _SIGN(y1 - y0);
-
-    _MINMAX(x0, x1);
-    _MINMAX(y0, y1);
-
-    uint8_t diff = abs(y1 - y0)/abs(x1 - x0);
-
-    for(uint8_t x = x0; x <= x1; ++x){
-        draw_pixel(x, (uint8_t)(y0 + ((x-x0)*diff)*sign));
-    }
-
+        int8_t error2 = 2 * error;
+        if(error2 > -dy){
+            error -= dy;
+            x0 += sx;
+        }
+        if(error2 < dx){
+            error += dx;
+            y0 += sy;
+        }
+    } 
     return;
-
 }
 
 
@@ -198,7 +180,31 @@ void OLED::draw_circle(uint8_t x0, uint8_t y0, uint8_t radius, bool filled){
         draw_pixel(x0, y0); 
         return;
     }
-
+    
+    uint8_t x = 0;
+    uint8_t y = radius;
+    int8_t delta = 1 - 2 * radius;
+    int8_t error = 0;
+    while(y >= 0) {
+      draw_pixel(x0 + x, y0 + y);
+      draw_pixel(x0 + x, y0 - y);
+      draw_pixel(x0 - x, y0 + y);
+      draw_pixel(x0 - x, y0 - y);
+      error = 2 * (delta + y) - 1;
+      if(delta < 0 && error <= 0) {
+        ++x;
+        delta += 2 * x + 1;
+        continue;
+      }
+      if(delta > 0 && error > 0) {
+        --y;
+        delta += 1 - 2 * y;
+        continue;
+      }
+      ++x;
+      delta += 2 * (x - y);
+      --y;
+    }
     
 }
 

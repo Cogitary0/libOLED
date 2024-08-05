@@ -33,7 +33,11 @@ static inline bool _LIMIT(const uint8_t x, const uint8_t y){
 }
 
 static inline int8_t _SIGN(const uint8_t value){
-    return (value < 0) ? -1 : 1;
+    return value < 0 ? -1 : 1;
+}
+
+static inline int8_t _SIGN(const uint8_t x, const uint8_t y){
+    return x < y ? 1 : -1;
 }
 
 static inline void _PRINT_BUFFER(const void* buffer){
