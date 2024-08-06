@@ -15,7 +15,7 @@ void OLED::init(void){
     static const uint8_t INIT[] {
         DISPLAY_COMMANDS::SET_DISPLAY_OFF,
         DISPLAY_COMMANDS::CHARGE_PUMP,
-        0x14,
+        DISPLAY_COMMANDS::VALUE,
         DISPLAY_COMMANDS::ADDRESSING_MODE,
         DISPLAY_COMMANDS::HORIZONTAL_ADDRESS,
         DISPLAY_COMMANDS::COLUMN_ADDRESS,
@@ -54,10 +54,11 @@ void OLED::set_invert_display(bool flag){
 
 
 void OLED::update(){
-    for(int i = 0; i < 64; ++i){
+    uint8_t i, j;
+    for(i = 0; i < 64; ++i){
         WRAPPER_BEGINTRANSMISSION(DISPLAY_CONFIG::ADDRESS);
         WRAPPER_WRITE(0x40);
-        for(int j = 0; j < 16; ++j){
+        for(j = 0; j < 16; ++j){
             WRAPPER_WRITE(__buffer[(i<<4) + j]);
         }
         WRAPPER_ENDTRANSMISSION();
@@ -117,6 +118,7 @@ void OLED::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1){
 
     const uint8_t dx = abs(x1 - x0);
     const uint8_t dy = abs(y1 - y0);
+    
 
     if(dx==0){
         draw_vertical_line(x0, min(y0, y1), max(y0, y1));
@@ -244,10 +246,26 @@ void OLED::draw_triangle(uint8_t x0, uint8_t y0,
 }
 
 
-void OLED::draw_char(uint8_t x, uint8_t y, const char ch){
+void OLED::draw_char(uint8_t x, uint8_t y, char ch) {
+  uint8_t font_width = 17; // ширина шрифта
+  uint8_t font_height = 19; // высота шрифта
 
+  // находим позицию символа в массиве
+  uint16_t char_offset = (ch - 32) * (font_width * font_height / 8);
+
+  // читаем байты символа из массива
+  for (uint8_t i = 0; i < font_height; i++) {
+    uint8_t byte_offset = char_offset + (i * font_width / 8);
+    uint8_t byte = pgm_read_byte(font_Dialog + byte_offset);
+
+    // выводим байт на дисплей
+    for (uint8_t j = 0; j < 8; j++) {
+      if (byte & (1 << j)) {
+        draw_pixel(x + (j * font_width / 8), y + i);
+      }
+    }
+  }
 }
-
 
 ///     SYSTEM COMMANDS     ///
 
@@ -273,9 +291,19 @@ void OLED::print_buffer(void){
 }
 
 
+void OLED::clear_buffer(void){
+    memset(__buffer, NULL, sizeof(__buffer));
+}
+
+
+void OLED::fill_buffer(uint8_t value){
+    memset(__buffer, value, sizeof(__buffer));
+}
+
+
 ///     PRIVATE FUNC    ///
 
-inline void OLED::__writter(byte DATA, byte MODE)
+inline void OLED::__writter(uint8_t DATA, uint8_t MODE)
 {
     WRAPPER_BEGINTRANSMISSION(__address);
     WRAPPER_WRITE(MODE);

@@ -33,14 +33,15 @@ class OLED {
         void draw_pixel              (uint8_t x,  uint8_t y);
 
         void clear_pixel             (uint8_t x, uint8_t y);
-
         bool get_pixel               (uint8_t x, uint8_t y);
         
         void send_command   (uint8_t command);
         void send_data      (uint8_t data);  
 
         uint8_t* get_buffer   (void);
-        void   print_buffer (void);
+        void     print_buffer (void);
+        void     clear_buffer (void);
+        void     fill_buffer  (uint8_t value);
 
     private:
         inline void __writter(uint8_t, uint8_t);
@@ -48,8 +49,8 @@ class OLED {
         // inline void __free_memory(void);
 
         const uint8_t  __address;
-        uint8_t __buffer[BUFFER_SIZE];
-        uint8_t *__buffer_ptr;
+        uint8_t  __buffer[BUFFER_SIZE];
+        uint8_t* __buffer_ptr;
 };
 
 

@@ -33,7 +33,8 @@ enum DISPLAY_COMMANDS : uint8_t{
 
     /// COMMANDS
     CHARGE_PUMP = 0x8D,
-    CLEAR_DISPLAY = 0x00
+    CLEAR_DISPLAY = 0x00,
+    VALUE = 0x14
 
 };
 
@@ -42,7 +43,6 @@ constexpr uint16_t EEPROM_SIZE = 1024;
 constexpr uint16_t EEPORM_PAGE_SIZE = 4;
 constexpr uint16_t FLASH_SIZE = 30720;
 constexpr uint16_t FLASH_PAGE_SIZE = 64;
-
 
 
 

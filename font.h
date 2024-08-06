@@ -1,7 +1,6 @@
 #ifndef LIB_OLED_FONT_DATA_H
 #define LIB_OLED_FONT_DATA_H
 
-
 static const char font_Dialog[] PROGMEM = {
 	0x11, // Width: 17
 	0x13, // Height: 19

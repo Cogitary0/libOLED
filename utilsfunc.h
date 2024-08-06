@@ -2,7 +2,6 @@
 #define LIB_OLED_UTILS_FUNC_H
 
 #include <Wire.h>
-#include <Arduino.h>
 
 static inline void WRAPPER_INIT(){
     Wire.begin();
