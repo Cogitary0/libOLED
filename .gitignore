@@ -1,3 +1,6 @@
 libOLED.ino
 char_code.txt
 mem_test
+
+.vscode
+.idea

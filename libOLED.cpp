@@ -1,5 +1,7 @@
 #include "libOLED.h"
 
+extern "C" const uint8_t glcdfont[];
+
 OLED::OLED(byte address) : __address(address){
     memset(__buffer, 0, sizeof(__buffer));
 }
@@ -35,10 +37,13 @@ void OLED::init(void){
 }
 
 
+
+
+
 ///     BASIC COMMANDS      ///
 
 void OLED::clear(void){
-    // memset(__buffer, NULL, sizeof(__buffer));
+    clear_buffer();
     send_command(DISPLAY_COMMANDS::CLEAR_DISPLAY);
 }
 
@@ -57,7 +62,7 @@ void OLED::update(){
     uint8_t i, j;
     for(i = 0; i < 64; ++i){
         WRAPPER_BEGINTRANSMISSION(DISPLAY_CONFIG::ADDRESS);
-        WRAPPER_WRITE(0x40);
+        WRAPPER_WRITE(DISPLAY_COMMANDS::DATA_MODE);
         for(j = 0; j < 16; ++j){
             WRAPPER_WRITE(__buffer[(i<<4) + j]);
         }
@@ -69,6 +74,9 @@ void OLED::update(){
 bool OLED::get_pixel(uint8_t x, uint8_t y){
     return (__buffer[((y&0xf8)<<4)+x] == 1 << (y & 7));
 }
+
+
+
 
 
 ///     DRAW COMMANDS     ///
@@ -246,26 +254,9 @@ void OLED::draw_triangle(uint8_t x0, uint8_t y0,
 }
 
 
-void OLED::draw_char(uint8_t x, uint8_t y, char ch) {
-  uint8_t font_width = 17; // ширина шрифта
-  uint8_t font_height = 19; // высота шрифта
 
-  // находим позицию символа в массиве
-  uint16_t char_offset = (ch - 32) * (font_width * font_height / 8);
 
-  // читаем байты символа из массива
-  for (uint8_t i = 0; i < font_height; i++) {
-    uint8_t byte_offset = char_offset + (i * font_width / 8);
-    uint8_t byte = pgm_read_byte(font_Dialog + byte_offset);
 
-    // выводим байт на дисплей
-    for (uint8_t j = 0; j < 8; j++) {
-      if (byte & (1 << j)) {
-        draw_pixel(x + (j * font_width / 8), y + i);
-      }
-    }
-  }
-}
 
 ///     SYSTEM COMMANDS     ///
 
@@ -310,6 +301,4 @@ inline void OLED::__writter(uint8_t DATA, uint8_t MODE)
     WRAPPER_WRITE(DATA);
     WRAPPER_ENDTRANSMISSION();
 }
-
-
 

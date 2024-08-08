@@ -7,9 +7,8 @@
 
 #include "constants.h"
 #include "utilsfunc.h"
-#include "font.h"
 
-class OLED {
+class OLED{
     public:
         OLED(uint8_t address);
         ~OLED(void);
@@ -21,7 +20,6 @@ class OLED {
 
         void set_display             (bool flag);
         void set_invert_display      (bool flag);
-        void set_font                (const uint8_t* font);
 
         void draw_line               (uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
         void draw_horizontal_line    (uint8_t x0, uint8_t y0, uint8_t x1);
@@ -39,7 +37,7 @@ class OLED {
         void send_data      (uint8_t data);  
 
         uint8_t* get_buffer   (void);
-        void     print_buffer (void);
+        void     print_buffer (void);       
         void     clear_buffer (void);
         void     fill_buffer  (uint8_t value);
 
