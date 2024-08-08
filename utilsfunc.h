@@ -3,43 +3,43 @@
 
 #include <Wire.h>
 
-static inline void WRAPPER_INIT(){
+inline void WRAPPER_INIT(){
     Wire.begin();
 }
 
-static inline void WRAPPER_BEGINTRANSMISSION(uint8_t _address){
+inline void WRAPPER_BEGINTRANSMISSION(uint8_t _address){
     Wire.beginTransmission(_address);
 }
 
-static inline void WRAPPER_WRITE(uint8_t _data){
+inline void WRAPPER_WRITE(uint8_t _data){
     Wire.write(_data);
 }
 
-static inline void WRAPPER_ENDTRANSMISSION(){
+inline void WRAPPER_ENDTRANSMISSION(){
     Wire.endTransmission();
 }
 
-static inline void _SWAP(uint8_t& x, uint8_t& y){
+inline void _SWAP(uint8_t& x, uint8_t& y){
     x^=y; y^=x; x^=y;
 }
 
-static inline void _MINMAX(uint8_t& p, uint8_t& q){
+inline void _MINMAX(uint8_t& p, uint8_t& q){
     if (p > q) _SWAP(p, q);
 }
 
-static inline bool _LIMIT(const uint8_t x, const uint8_t y){
+inline bool _LIMIT(const uint8_t x, const uint8_t y){
     return (x>=DISPLAY_CONFIG::WIDTH || y>=DISPLAY_CONFIG::HEIGHT);
 }
 
-static inline int8_t _SIGN(const uint8_t value){
+inline int8_t _SIGN(const uint8_t value){
     return value < 0 ? -1 : 1;
 }
 
-static inline int8_t _SIGN(const uint8_t x, const uint8_t y){
+inline int8_t _SIGN(const uint8_t x, const uint8_t y){
     return x < y ? 1 : -1;
 }
 
-static inline void _PRINT_BUFFER(const void* buffer){
+inline void _PRINT_BUFFER(const void* buffer){
     constexpr uint8_t SIZE_PRINT = 64;
     char str[5];
 

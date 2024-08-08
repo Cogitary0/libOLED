@@ -9,8 +9,13 @@
 #include "constants.h"
 #include "utilsfunc.h"
 
+static SPISettings OLED_SPI_SET(8000000ul,
+                                SPI_SETTING::BITORDER,
+                                SPI_SETTING::MODE0);
+
 class OLED{
     inline void __writter(uint8_t, uint8_t);
+    inline void __fill(uint8_t);
 
     const uint8_t  __address;
     uint8_t __buffer[BUFFER_SIZE];

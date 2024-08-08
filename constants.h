@@ -38,6 +38,13 @@ enum DISPLAY_COMMANDS : uint8_t{
 
 };
 
+
+enum SPI_SETTING {
+    SPEED = 1000000ul,
+    BITORDER = 1,
+    MODE0 = 0x00
+};
+
 static constexpr uint16_t BUFFER_SIZE = 1024;  /// MAX_X * MAX_Y / 8
 static constexpr uint16_t EEPROM_SIZE = 1024;
 static constexpr uint16_t EEPORM_PAGE_SIZE = 4;

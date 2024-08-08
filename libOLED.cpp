@@ -14,7 +14,6 @@ OLED::~OLED(void){
 void OLED::init(void){
     WRAPPER_INIT();
 
-    SPI.setClockDivider(100000ul);
 
     static const uint8_t INIT[] {
         DISPLAY_COMMANDS::SET_DISPLAY_OFF,
@@ -45,8 +44,8 @@ void OLED::init(void){
 ///     BASIC COMMANDS      ///
 
 void OLED::clear(void){
-    clear_buffer();
     send_command(DISPLAY_COMMANDS::CLEAR_DISPLAY);
+    __fill(0x00); //clear buffer
 }
 
 
@@ -281,19 +280,22 @@ void OLED::print_buffer(void){
 
 
 void OLED::clear_buffer(void){
-    memset(__buffer, 0x00, BUFFER_SIZE);
+    __fill(0x00);
 }
 
 
 void OLED::fill_buffer(const uint8_t value){
-    memset(__buffer, value, BUFFER_SIZE);
+    __fill(value);
 }
 
 
 ///     PRIVATE FUNC    ///
 
-inline void OLED::__writter(uint8_t MODE, uint8_t DATA)
-{
+inline void OLED::__fill(const uint8_t value){
+    memset(__buffer, value, BUFFER_SIZE);
+}
+
+inline void OLED::__writter(uint8_t MODE, uint8_t DATA){
     WRAPPER_BEGINTRANSMISSION(__address);
     WRAPPER_WRITE(MODE);
     WRAPPER_WRITE(DATA);
