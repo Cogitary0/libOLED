@@ -45,7 +45,7 @@ void OLED::init(void){
 
 void OLED::clear(void){
     send_command(DISPLAY_COMMANDS::CLEAR_DISPLAY);
-    __fill(0x00); //clear buffer
+    _fill(0x00); //clear buffer
 }
 
 
@@ -259,13 +259,13 @@ void OLED::draw_triangle(uint8_t x0, uint8_t y0,
 
 void OLED::send_command(byte command)
 {
-    __writter(DISPLAY_COMMANDS::COMMAND_MODE, command);
+    _writter(DISPLAY_COMMANDS::COMMAND_MODE, command);
 }
 
 
 void OLED::send_data(byte data)
 {
-    __writter(DISPLAY_COMMANDS::DATA_MODE, data);
+    _writter(DISPLAY_COMMANDS::DATA_MODE, data);
 }
 
 
@@ -280,22 +280,22 @@ void OLED::print_buffer(void){
 
 
 void OLED::clear_buffer(void){
-    __fill(0x00);
+    _fill(0x00);
 }
 
 
 void OLED::fill_buffer(const uint8_t value){
-    __fill(value);
+    _fill(value);
 }
 
 
 ///     PRIVATE FUNC    ///
 
-inline void OLED::__fill(const uint8_t value){
+inline void OLED::_fill(const uint8_t value){
     memset(__buffer, value, BUFFER_SIZE);
 }
 
-inline void OLED::__writter(uint8_t MODE, uint8_t DATA){
+inline void OLED::_writter(uint8_t MODE, uint8_t DATA){
     WRAPPER_BEGINTRANSMISSION(__address);
     WRAPPER_WRITE(MODE);
     WRAPPER_WRITE(DATA);
