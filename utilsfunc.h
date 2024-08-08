@@ -28,7 +28,7 @@ static inline void _MINMAX(uint8_t& p, uint8_t& q){
 }
 
 static inline bool _LIMIT(const uint8_t x, const uint8_t y){
-    return (x>=DISPLAY_CONFIG::MAX_X || y>=DISPLAY_CONFIG::MAX_Y);
+    return (x>=DISPLAY_CONFIG::WIDTH || y>=DISPLAY_CONFIG::HEIGHT);
 }
 
 static inline int8_t _SIGN(const uint8_t value){

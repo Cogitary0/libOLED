@@ -2,9 +2,9 @@
 
 extern "C" const uint8_t glcdfont[];
 
-OLED::OLED(byte address) : __address(address){
+OLED::OLED(uint8_t address) : __address(address){
     memset(__buffer, 0, sizeof(__buffer));
-}
+}   
 
 OLED::~OLED(void){
     delete[] __buffer;
@@ -14,18 +14,20 @@ OLED::~OLED(void){
 void OLED::init(void){
     WRAPPER_INIT();
 
+    SPI.setClockDivider(100000ul);
+
     static const uint8_t INIT[] {
         DISPLAY_COMMANDS::SET_DISPLAY_OFF,
         DISPLAY_COMMANDS::CHARGE_PUMP,
         DISPLAY_COMMANDS::VALUE,
         DISPLAY_COMMANDS::ADDRESSING_MODE,
-        DISPLAY_COMMANDS::HORIZONTAL_ADDRESS,
+        DISPLAY_COMMANDS::HORIZONTAL_MODE,
         DISPLAY_COMMANDS::COLUMN_ADDRESS,
-        DISPLAY_COMMANDS::HORIZONTAL_ADDRESS,
-        DISPLAY_CONFIG::MAX_X,
+        DISPLAY_COMMANDS::HORIZONTAL_MODE,
+        DISPLAY_CONFIG::WIDTH,
         DISPLAY_COMMANDS::PAGE_ADDRESS,
-        DISPLAY_COMMANDS::HORIZONTAL_ADDRESS,
-        DISPLAY_CONFIG::MAX_Y,
+        DISPLAY_COMMANDS::HORIZONTAL_MODE,
+        DISPLAY_CONFIG::HEIGHT,
         DISPLAY_COMMANDS::SET_DISPLAY_ON
     };
 
@@ -72,19 +74,15 @@ void OLED::update(){
 
 
 bool OLED::get_pixel(uint8_t x, uint8_t y){
-    return (__buffer[((y&0xf8)<<4)+x] == 1 << (y & 7));
+    return (__buffer[((y & 0xf8) << 4) + x] == 1 << (y & 7));
 }
-
-
-
-
 
 ///     DRAW COMMANDS     ///
 
 void OLED::draw_vertical_line(uint8_t x0, uint8_t y0, uint8_t y1){
     _MINMAX(y0, y1);
 
-    if(x0 > DISPLAY_CONFIG::MAX_X){
+    if(x0 > DISPLAY_CONFIG::WIDTH){
         return;
     }
 
@@ -103,7 +101,7 @@ void OLED::draw_vertical_line(uint8_t x0, uint8_t y0, uint8_t y1){
 void OLED::draw_horizontal_line(uint8_t x0, uint8_t y0, uint8_t x1){
     _MINMAX(x0, x1);
 
-    if(y0 > DISPLAY_CONFIG::MAX_Y){
+    if(y0 > DISPLAY_CONFIG::HEIGHT){
         return;
     }    
 
@@ -112,8 +110,8 @@ void OLED::draw_horizontal_line(uint8_t x0, uint8_t y0, uint8_t x1){
         return;
     }
 
-    x0 = constrain(x0, 0, DISPLAY_CONFIG::MAX_X);
-    x1 = constrain(x1, 0, DISPLAY_CONFIG::MAX_X);
+    x0 = constrain(x0, 0, DISPLAY_CONFIG::WIDTH);
+    x1 = constrain(x1, 0, DISPLAY_CONFIG::WIDTH);
 
     for(uint8_t i = x0; i <= x1; ++i){
         draw_pixel(i, y0);
@@ -241,7 +239,7 @@ void OLED::draw_circle(uint8_t x0, uint8_t y0, uint8_t radius, bool filled){
 
 void OLED::draw_pixel(uint8_t x, uint8_t y){
     if(_LIMIT(x,y))return;
-    __buffer[((y&0xF8)<<4)+x] |= 1 << (y&7);
+    __buffer[((y & 0xF8) << 4) + x] |= 1 << (y & 7);
 }
 
 
@@ -262,13 +260,13 @@ void OLED::draw_triangle(uint8_t x0, uint8_t y0,
 
 void OLED::send_command(byte command)
 {
-    __writter(command, DISPLAY_COMMANDS::COMMAND_MODE);
+    __writter(DISPLAY_COMMANDS::COMMAND_MODE, command);
 }
 
 
 void OLED::send_data(byte data)
 {
-    __writter(data, DISPLAY_COMMANDS::DATA_MODE);
+    __writter(DISPLAY_COMMANDS::DATA_MODE, data);
 }
 
 
@@ -283,18 +281,18 @@ void OLED::print_buffer(void){
 
 
 void OLED::clear_buffer(void){
-    memset(__buffer, NULL, sizeof(__buffer));
+    memset(__buffer, 0x00, BUFFER_SIZE);
 }
 
 
-void OLED::fill_buffer(uint8_t value){
-    memset(__buffer, value, sizeof(__buffer));
+void OLED::fill_buffer(const uint8_t value){
+    memset(__buffer, value, BUFFER_SIZE);
 }
 
 
 ///     PRIVATE FUNC    ///
 
-inline void OLED::__writter(uint8_t DATA, uint8_t MODE)
+inline void OLED::__writter(uint8_t MODE, uint8_t DATA)
 {
     WRAPPER_BEGINTRANSMISSION(__address);
     WRAPPER_WRITE(MODE);

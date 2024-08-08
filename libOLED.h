@@ -4,18 +4,23 @@
 #include <Arduino.h>
 #include <string.h>
 #include <avr/pgmspace.h>
+#include <SPI.h>
 
 #include "constants.h"
 #include "utilsfunc.h"
 
 class OLED{
+    inline void __writter(uint8_t, uint8_t);
+
+    const uint8_t  __address;
+    uint8_t __buffer[BUFFER_SIZE];
+
     public:
         OLED(uint8_t address);
         ~OLED(void);
     
         void init   (void);
         void clear  (void);
-        void home   (void);
         void update (void);
 
         void set_display             (bool flag);
@@ -39,16 +44,8 @@ class OLED{
         uint8_t* get_buffer   (void);
         void     print_buffer (void);       
         void     clear_buffer (void);
-        void     fill_buffer  (uint8_t value);
-
-    private:
-        inline void __writter(uint8_t, uint8_t);
-        // inline void __allocate_memory(void);
-        // inline void __free_memory(void);
-
-        const uint8_t  __address;
-        uint8_t  __buffer[BUFFER_SIZE];
-        uint8_t* __buffer_ptr;
+        void     fill_buffer  (const uint8_t value);
+        
 };
 
 

@@ -3,8 +3,8 @@
 
 
 enum DISPLAY_CONFIG : uint8_t{
-    MAX_X = 0x7F,
-    MAX_Y = 0x3F,
+    WIDTH = 0x7F,
+    HEIGHT = 0x3F,
     ADDRESS = 0x3C
 };
 
@@ -27,7 +27,7 @@ enum DISPLAY_COMMANDS : uint8_t{
     DATA_MODE = 0x40,
     VERTICAL_MODE = 0x01,
     ADDRESSING_MODE = 0x20,
-    HORIZONTAL_ADDRESS = 0x00,
+    HORIZONTAL_MODE = 0x00,
     COLUMN_ADDRESS = 0x21,
     PAGE_ADDRESS = 0x22,
 
@@ -38,11 +38,11 @@ enum DISPLAY_COMMANDS : uint8_t{
 
 };
 
-constexpr uint16_t BUFFER_SIZE = 1024;  /// MAX_X * MAX_Y / 8
-constexpr uint16_t EEPROM_SIZE = 1024;
-constexpr uint16_t EEPORM_PAGE_SIZE = 4;
-constexpr uint16_t FLASH_SIZE = 30720;
-constexpr uint16_t FLASH_PAGE_SIZE = 64;
+static constexpr uint16_t BUFFER_SIZE = 1024;  /// MAX_X * MAX_Y / 8
+static constexpr uint16_t EEPROM_SIZE = 1024;
+static constexpr uint16_t EEPORM_PAGE_SIZE = 4;
+static constexpr uint16_t FLASH_SIZE = 30720;
+static constexpr uint16_t FLASH_PAGE_SIZE = 64;
 
 
 
