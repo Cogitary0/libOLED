@@ -2,12 +2,12 @@
 
 extern "C" const uint8_t glcdfont[];
 
-OLED::OLED(uint8_t address) : __address(address){
-    memset(__buffer, 0, sizeof(__buffer));
+OLED::OLED(uint8_t address) : _address(address){
+    memset(_buffer, 0, sizeof(_buffer));
 }   
 
 OLED::~OLED(void){
-    delete[] __buffer;
+    delete[] _buffer;
 }
 
 
@@ -65,7 +65,7 @@ void OLED::update(){
         WRAPPER_BEGINTRANSMISSION(DISPLAY_CONFIG::ADDRESS);
         WRAPPER_WRITE(DISPLAY_COMMANDS::DATA_MODE);
         for(j = 0; j < 16; ++j){
-            WRAPPER_WRITE(__buffer[(i<<4) + j]);
+            WRAPPER_WRITE(_buffer[(i<<4) + j]);
         }
         WRAPPER_ENDTRANSMISSION();
     }
@@ -73,7 +73,7 @@ void OLED::update(){
 
 
 bool OLED::get_pixel(uint8_t x, uint8_t y){
-    return (__buffer[((y & 0xf8) << 4) + x] == 1 << (y & 7));
+    return (_buffer[((y & 0xf8) << 4) + x] == 1 << (y & 7));
 }
 
 ///     DRAW COMMANDS     ///
@@ -238,7 +238,7 @@ void OLED::draw_circle(uint8_t x0, uint8_t y0, uint8_t radius, bool filled){
 
 void OLED::draw_pixel(uint8_t x, uint8_t y){
     if(_LIMIT(x,y))return;
-    __buffer[((y & 0xF8) << 4) + x] |= 1 << (y & 7);
+    _buffer[((y & 0xF8) << 4) + x] |= 1 << (y & 7);
 }
 
 
@@ -270,12 +270,12 @@ void OLED::send_data(byte data)
 
 
 uint8_t* OLED::get_buffer(void){
-    return __buffer;
+    return _buffer;
 }
 
 
 void OLED::print_buffer(void){
-    _PRINT_BUFFER(__buffer);
+    _PRINT_BUFFER(_buffer);
 }
 
 
@@ -292,11 +292,11 @@ void OLED::fill_buffer(const uint8_t value){
 ///     PRIVATE FUNC    ///
 
 inline void OLED::_fill(const uint8_t value){
-    memset(__buffer, value, BUFFER_SIZE);
+    memset(_buffer, value, BUFFER_SIZE);
 }
 
 inline void OLED::_writter(uint8_t MODE, uint8_t DATA){
-    WRAPPER_BEGINTRANSMISSION(__address);
+    WRAPPER_BEGINTRANSMISSION(_address);
     WRAPPER_WRITE(MODE);
     WRAPPER_WRITE(DATA);
     WRAPPER_ENDTRANSMISSION();

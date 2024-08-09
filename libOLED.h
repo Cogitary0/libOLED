@@ -14,11 +14,11 @@ static SPISettings OLED_SPI_SET(8000000ul,
                                 SPI_SETTING::MODE0);
 
 class OLED{
-    inline void __writter(uint8_t, uint8_t);
-    inline void __fill(uint8_t);
+    inline void _writter(uint8_t, uint8_t);
+    inline void _fill(uint8_t);
 
-    const uint8_t  __address;
-    uint8_t __buffer[BUFFER_SIZE];
+    const uint8_t  _address;
+    uint8_t _buffer[BUFFER_SIZE];
 
     public:
         OLED(uint8_t address);
